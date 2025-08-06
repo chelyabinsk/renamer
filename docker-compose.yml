@@ -1,0 +1,8 @@
+services:
+  rust-dev:
+    image: rust
+    container_name: rust-dev-container
+    volumes:
+      - .:/usr/src/myapp  # Mount the local 'projects' directory
+    working_dir: /usr/src/myapp  # Set the working directory inside the container
+    tty: true  # Keep the container running

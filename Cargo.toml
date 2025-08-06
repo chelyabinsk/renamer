@@ -1,0 +1,11 @@
+[package]
+name = "renamer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+natord = "1.0"
+iced = { version = "0.13.1", features = ["advanced"] }
+native-dialog = "0.7.0"
+rfd = "0.15.4"  # or latest
+dirs-next = "2.0.0"
