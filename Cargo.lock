@@ -2929,7 +2929,7 @@ dependencies = [
 
 [[package]]
 name = "renamer"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "async-stream",
  "dirs-next",

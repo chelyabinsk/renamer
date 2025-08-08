@@ -78,6 +78,13 @@ fn compute_auto_padding(total_files: usize) -> usize {
     }
 }
 
+fn to_display_string(path: &PathBuf) -> String {
+    match path.to_str() {
+        Some(valid) => valid.to_string(), // Safe UTF-8 path
+        None => path.to_string_lossy().into_owned(), // Fall back to lossy conversion
+    }
+}
+
 fn update_preview(state: &mut State) {
     if let Some(input_path) = &state.input_folder_path {
         let ext = &state.file_extension;
@@ -97,7 +104,7 @@ fn update_preview(state: &mut State) {
                     let renamed_names = rename_files_with_leading_zeros(&files, state.padding_zeros, state.include_original_name);
 
                     state.original_preview = files.iter()
-                        .map(|p| p.to_string_lossy().to_string())
+                        .map(to_display_string)
                         .take(20)
                         .collect();
 
@@ -105,7 +112,7 @@ fn update_preview(state: &mut State) {
 
                     state.renamed_preview = renamed_names
                         .iter()
-                        .map(|name| output_dir.join(name).to_string_lossy().to_string())
+                        .map(|name| to_display_string(&output_dir.join(name)))
                         .take(20)
                         .collect();
 
