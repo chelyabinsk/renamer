@@ -48,14 +48,18 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: strip ${{ matrix.binary_path }}
 
-      - name: Package artifact
+      - name: Package artifact (Linux/macOS)
+        if: matrix.os != 'windows-latest'
         run: |
           mkdir dist
-          if [ "${{ matrix.archive_ext }}" = "tar.gz" ]; then
-            tar -czvf dist/${{ matrix.artifact_name }}.tar.gz -C $(dirname ${{ matrix.binary_path }}) $(basename ${{ matrix.binary_path }})
-          else
-            powershell Compress-Archive -Path ${{ matrix.binary_path }} -DestinationPath dist/${{ matrix.artifact_name }}.zip
-          fi
+          tar -czvf dist/${{ matrix.artifact_name }}.tar.gz -C $(dirname ${{ matrix.binary_path }}) $(basename ${{ matrix.binary_path }})
+
+      - name: Package artifact (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          mkdir dist
+          Compress-Archive -Path "${{ matrix.binary_path }}" -DestinationPath "dist/${{ matrix.artifact_name }}.zip"
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
