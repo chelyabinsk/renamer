@@ -3,15 +3,30 @@ name: Release Binary
 on:
   push:
     tags:
-      - 'v*'  # e.g. v1.0.0
+      - 'v*'
 
 permissions:
-  contents: write 
+  contents: write
 
 jobs:
   build:
-    name: Build and Upload Release Binary
-    runs-on: ubuntu-latest
+    name: Build and Upload Release Binaries
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: renamer-linux
+            binary_path: target/release/renamer
+            archive_ext: tar.gz
+          - os: macos-latest
+            artifact_name: renamer-macos
+            binary_path: target/release/renamer
+            archive_ext: tar.gz
+          - os: windows-latest
+            artifact_name: renamer-windows
+            binary_path: target/release/renamer.exe
+            archive_ext: zip
 
     steps:
       - uses: actions/checkout@v4
@@ -25,13 +40,22 @@ jobs:
       - name: Build release binary
         run: cargo build --release
 
-      - name: Strip binary (optional)
-        run: strip target/release/renamer
+      - name: Make binary executable (Linux/macOS only)
+        if: matrix.os != 'windows-latest'
+        run: chmod +x ${{ matrix.binary_path }}
 
-      - name: Create release asset
+      - name: Strip binary (Linux/macOS only)
+        if: matrix.os != 'windows-latest'
+        run: strip ${{ matrix.binary_path }}
+
+      - name: Package artifact
         run: |
           mkdir dist
-          cp target/release/renamer dist/renamer-linux
+          if [ "${{ matrix.archive_ext }}" = "tar.gz" ]; then
+            tar -czvf dist/${{ matrix.artifact_name }}.tar.gz -C $(dirname ${{ matrix.binary_path }}) $(basename ${{ matrix.binary_path }})
+          else
+            powershell Compress-Archive -Path ${{ matrix.binary_path }} -DestinationPath dist/${{ matrix.artifact_name }}.zip
+          fi
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
