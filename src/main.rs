@@ -4,7 +4,7 @@ mod ui;
 use iced::{Settings};
 use std::borrow::Cow;
 
-const MONO_FONT: &[u8] = include_bytes!("../assets/NotoSansMono-Regular.ttf");
+const MONO_FONT: &[u8] = include_bytes!("../assets/NotoSans-Regular.ttf");
 
 
 fn main() -> iced::Result {
