@@ -273,7 +273,7 @@ pub fn update(state: &mut State, message: Message) -> Task<Message> {
 }
 
 // --- View function ---
-pub fn view(state: &State) -> Element<Message> {
+pub fn view(state: &State) -> Element<'_, Message> {
     let input_display = state.input_folder_path
         .as_ref()
         .map(|s| s.as_str())
