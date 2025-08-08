@@ -2939,6 +2939,7 @@ dependencies = [
  "rfd",
  "tempfile",
  "tokio",
+ "walkdir",
 ]
 
 [[package]]

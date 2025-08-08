@@ -10,6 +10,7 @@ rfd = "0.15.4"  # or latest
 dirs-next = "2.0.0"
 futures = "0.3.31"
 async-stream = "0.3.6"
+walkdir = "2.5.0"
 
 [dev-dependencies]
 tokio = { version = "1.47.1", features = ["macros", "rt-multi-thread"] }

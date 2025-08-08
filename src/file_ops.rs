@@ -1,24 +1,21 @@
-use std::path::{Path, PathBuf};
+use std::path::{PathBuf};
 use natord::compare;
-use std::fs;
+use walkdir::WalkDir;
 
 // --- File listing and renaming logic ---
 pub fn list_files_in_directory(path: &str, ext: &str) -> Result<Vec<PathBuf>, String> {
     let ext_lower = ext.to_lowercase();
-    let mut entries: Vec<PathBuf> = fs::read_dir(Path::new(path))
-        .map_err(|e| e.to_string())?
-        .filter_map(|entry| entry.ok())
+    let mut entries: Vec<PathBuf> = WalkDir::new(path)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|entry| entry.file_type().is_file())
         .filter_map(|entry| {
-            let path = entry.path();
-            if path.is_file() {
-                let matches = path.extension()
-                    .map(|e| e.to_string_lossy().to_lowercase() == ext_lower)
-                    .unwrap_or(false);
-                if matches {
-                    Some(path)
-                } else {
-                    None
-                }
+            let path = entry.path().to_path_buf();
+            let matches = path.extension()
+                .map(|e| e.to_string_lossy().to_lowercase() == ext_lower)
+                .unwrap_or(false);
+            if matches {
+                Some(path)
             } else {
                 None
             }

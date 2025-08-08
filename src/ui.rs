@@ -4,6 +4,7 @@ use dirs_next::home_dir;
 use std::path::{PathBuf};
 use iced::widget::{PickList};
 use iced::widget::Checkbox;
+use iced::widget::scrollable;
 
 const PADDING_OPTIONS: [usize; 5] = [1, 2, 3, 4, 5];
 
@@ -291,29 +292,31 @@ pub fn view(state: &State) -> Element<Message> {
         1.0
     };
 
-    let original_preview_list = state.original_preview.iter().fold(
-        column![],
-        |col, file_name| col.push(text(file_name).size(14)),
+    let original_preview_list = scrollable(
+        column![
+            text("Original file names:").size(16),
+            state.original_preview.iter().fold(column![], |col, file_name| {
+                col.push(text(file_name).size(14))
+            })
+        ]
+        .spacing(5)
     );
-
-    let renamed_preview_list = state.renamed_preview.iter().fold(
-        column![],
-        |col, file_name| col.push(text(file_name).size(14)),
+    
+    let renamed_preview_list = scrollable(
+        column![
+            text("Renamed file names:").size(16),
+            state.renamed_preview.iter().fold(column![], |col, file_name| {
+                col.push(text(file_name).size(14))
+            })
+        ]
+        .spacing(5)
     );
 
     let previews = row![
-        column![
-            text("Original file names:").size(16),
-            original_preview_list
-        ]
-        .width(Length::FillPortion(1)),
-
-        column![
-            text("Renamed file names:").size(16),
-            renamed_preview_list
-        ]
-        .width(Length::FillPortion(1))
-    ];
+        original_preview_list.width(Length::FillPortion(1)).height(Length::Fixed(200.0)),
+        renamed_preview_list.width(Length::FillPortion(1)).height(Length::Fixed(200.0)),
+    ]
+    .spacing(20);
 
     let progress = progress_bar(0.0..=1.0, progress_value)
         .width(Length::Fill)
@@ -372,6 +375,7 @@ pub fn view(state: &State) -> Element<Message> {
             row![ button("Start renaming").on_press(Message::StartRenaming) ].spacing(10)
         )
         .center_x(Length::Fill),
+
     ]
     .spacing(10)
     .padding(10)
