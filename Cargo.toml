@@ -1,11 +1,17 @@
 [package]
 name = "renamer"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2024"
 
 [dependencies]
 natord = "1.0"
 iced = { version = "0.13.1", features = ["advanced"] }
-native-dialog = "0.7.0"
 rfd = "0.15.4"  # or latest
 dirs-next = "2.0.0"
+futures = "0.3.31"
+async-stream = "0.3.6"
+
+[dev-dependencies]
+tokio = { version = "1.47.1", features = ["macros", "rt-multi-thread"] }
+tempfile = "3.10.1"
+futures = "0.3"
